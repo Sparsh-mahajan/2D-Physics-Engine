@@ -4,13 +4,14 @@
         {
             "type": "cppbuild",
             "label": "C/C++: g++.exe build active file",
-            "command": "PathToCompiler",
+            "command": "C:\\MinGW\\bin\\g++.exe",
             "args": [
                 "-g",
                 "-std=c++17",
                 "${file}",
-                "-I./include",
-                "-L./lib",
+                "-I./External/include",
+				"-I./External/src",
+                "-L./External/lib",
                 "-lopengl32",
                 "-lglew32",
                 "-lglfw3dll",
@@ -24,7 +25,7 @@
                 "$gcc"
             ],
             "group": "build",
-            "detail": "compiler: PathToCompiler"
+            "detail": "compiler: C:\\MinGW\\bin\\g++.exe"
         }
     ]
 }
