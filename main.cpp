@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-// I just have a few comments
+// I just have a few comments.
 
 // Also you will need to have the main.cpp in the root dir for this build task to work. When I fix it in my own project I will send the fix.
 // Make sure you have glfw3.dll and glew32.dll in root dir as well. Any questions about the building just ask. 
