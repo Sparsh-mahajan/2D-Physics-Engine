@@ -1,4 +1,4 @@
-
+#include<GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
@@ -31,11 +31,30 @@ int main()
     // I'd have this up at the start as it makes it easier for readability
     glfwMakeContextCurrent(gameWindow);
 
+    if(glewInit() != GLEW_OK)
+    {
+        std::cout<<"\nerror!";
+    }
+
+    float positions[] = {
+        -0.5f, -0.5f,
+         0.0f,  0.5f,
+         0.5f, -0.5f
+    };
+    unsigned int Buffer;
+    glGenBuffers(1, &Buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Buffer);
+    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_DYNAMIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+
     // Application (Game) loop
     while(!glfwWindowShouldClose(gameWindow))
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(gameWindow);
         glfwPollEvents();
