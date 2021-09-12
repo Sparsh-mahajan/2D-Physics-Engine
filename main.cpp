@@ -1,7 +1,47 @@
-#include <malloc.h>
 #include<GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
+#include<GLFW/glfw3.h>
+
+#include<malloc.h>
+#include<iostream>
+#include<fstream>
+#include<sstream>
+#include<string>
+
+struct ProgramShaderSource
+{
+    std::string VertexSource;
+    std::string FragmentSource;
+};
+
+static ProgramShaderSource ParseShader(const std::string& filepath)
+{
+    enum class ShaderType
+    {
+        NONE = -1, VERTEX = 0, FRAGMENT = 1
+    };
+
+    ShaderType type = ShaderType::NONE;
+    std::stringstream ss[2];
+
+    std::ifstream stream(filepath);
+    std::string line;
+    while(getline(stream, line))
+    {
+        if(line.find("#shader") != std::string::npos)
+        {
+            if(line.find("vertex") != std::string::npos)
+                type = ShaderType::VERTEX;
+            else if(line.find("fragment") != std::string::npos)
+                type = ShaderType::FRAGMENT;   
+        }
+        else
+        {
+            //add any code of their respective shader to the respective string
+            ss[ (int)type ]<<line<<'\n';
+        }
+    }
+    return {ss[0].str() ,ss[1].str() };
+}
 
 
 // I just have a few comments.
@@ -93,28 +133,11 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
-    std::string VertexShader = 
-    "#version 330 core\n"
-    "\n"
-    "layout(location = 0) in vec4 Position;"
-    "\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = Position;"
-    "}\n";
+    ProgramShaderSource Source = ParseShader("Res\\Shaders\\Basic.shader");
+    //std::cout<<Source.VertexSource<<std::endl;
+    //std::cout<<Source.FragmentSource<<std::endl;
 
-
-    std::string FragmentShader = 
-    "#version 330 core\n"
-    "\n"
-    "layout(location = 0) out vec4 Color;"
-    "\n"
-    "void main()\n"
-    "{\n"
-    "   Color = vec4(1.0, 0.0, 0.0, 1.0);\n"
-    "}\n";
-
-    unsigned int Shader = CreateShader(VertexShader, FragmentShader);
+    unsigned int Shader = CreateShader(Source.VertexSource, Source.FragmentSource);
     glUseProgram(Shader);
 
     // Application (Game) loop
@@ -128,6 +151,7 @@ int main()
         glfwPollEvents();
     }
 
+    glDeleteProgram(Shader);
     glfwTerminate();    
     return 0;
 }
