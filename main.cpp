@@ -121,17 +121,28 @@ int main()
     }
 
     float positions[] = {
-        -0.5f, -0.5f,
-         0.0f,  0.5f,
-         0.5f, -0.5f
+        -0.5f, -0.5f,  //0
+         0.5f, -0.5f,  //1
+         0.5f,  0.5f,  //2
+        -0.5f,  0.5f   //3
     };
-    unsigned int Buffer;
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    unsigned int Buffer;   //vertex position buffer
     glGenBuffers(1, &Buffer);
     glBindBuffer(GL_ARRAY_BUFFER, Buffer);
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+
+    unsigned int iob;    //index buffer
+    glGenBuffers(1, &iob);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iob);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW );
 
     ProgramShaderSource Source = ParseShader("Res\\Shaders\\Basic.shader");
     //std::cout<<Source.VertexSource<<std::endl;
@@ -145,7 +156,7 @@ int main()
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(gameWindow);
         glfwPollEvents();
